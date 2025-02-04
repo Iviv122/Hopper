@@ -1,5 +1,3 @@
-using System;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 public class Shotgun : Weapon
