@@ -8,14 +8,14 @@ public class PickUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        Debug.Log("Weapon added");
         if (col.gameObject.CompareTag("Player"))
         {
-            AddItem(col.gameObject.GetComponent<WeaponManager>());
+            AddItem(col.gameObject.GetComponentInParent<WeaponManager>());
             Destroy(gameObject);
+    
+            Debug.Log("Weapon added");
         }
     }
-
     void AddItem(WeaponManager player)
     {
         switch (weapon)

@@ -29,8 +29,7 @@ public class WeaponManager : MonoBehaviour
     }
     public void Shoot(){
         try{
-
-        weapons[currentWeapon].Shoot(cam,player.rb);
+            weapons[currentWeapon].Shoot(cam,player.rb);
         }catch(IndexOutOfRangeException e){
             Debug.Log(e);
         }

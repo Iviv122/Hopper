@@ -17,7 +17,7 @@ public class Shotgun : Weapon
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
             Instantiate(Bullet, rayOrigin, cam.transform.rotation);
 
-            player.AddForce(-cam.gameObject.transform.forward*10f,ForceMode.Impulse);
+            player.linearVelocity += -cam.gameObject.transform.forward*25f;
 
             CurrentAmmo--;
             canShoot = false;

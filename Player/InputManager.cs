@@ -1,75 +1,67 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+
 public class InputManager : MonoBehaviour
 {
-    [SerializeField] KeyCode jump = KeyCode.Space;
-    [SerializeField] KeyCode crouch = KeyCode.LeftControl;
-    [SerializeField] KeyCode restart = KeyCode.R;
-    public float x;
-    public float y;
+    [SerializeField] private KeyCode jump = KeyCode.Space;
+    [SerializeField] private KeyCode slide = KeyCode.LeftControl;
+    [SerializeField] private KeyCode restart = KeyCode.R;
+    [SerializeField] public float x;
+    [SerializeField] public float y; 
+    [SerializeField] public bool isCrouching;
+    [SerializeField] public bool isJumping;
 
+    public event Action CrouchStart;
+    public event Action CrouchEnd;
     public event Action Shoot;
     public event Action<int> InputNumber;
-    public event Action InputRegistred;
-    public event Action InputRestart;
-    public void ControllWASD()
-    {
+    void MoveInput(){
         x = Input.GetAxisRaw("Horizontal");
-        y = Input.GetAxisRaw("Vertical");
+        y = Input.GetAxisRaw("Vertical"); 
     }
-    public bool isJumping()
-    {
-        return Input.GetKey(jump);
+    void StartCrouch(){
+        if(Input.GetKeyDown(slide)){
+            CrouchStart?.Invoke();
+        }
     }
-    public bool isCrouchingDown()
-    {
-        return Input.GetKeyDown(crouch);
+    void IsCrouching(){
+        isCrouching = Input.GetKey(slide);
     }
-    public bool isCrouching()
-    {
-        return Input.GetKey(crouch);
+    void IsJumping(){
+        isJumping = Input.GetKey(jump);
     }
-    public bool isCrouchingUp()
-    {
-        return Input.GetKeyUp(crouch);
-    }
-    private void LeftMouseButon()
-    {
-        if (Input.GetMouseButton(0))
-        {
+    void IsShoot(){
+        if(Input.GetMouseButton(0)){
             Shoot?.Invoke();
         }
     }
-    private void Restart(){
+    void IsRestart(){
         if(Input.GetKeyDown(restart)){
-            //InputRestart?.Invoke();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
-    private void NumberInput()
-    {
-        for (KeyCode key = KeyCode.Alpha0; key <= KeyCode.Alpha9; key++)
+    void IsInputNumber(){
+        for (int i = 0; i <= 9; i++)
         {
+            KeyCode key = KeyCode.Alpha0 + i;
             if (Input.GetKeyDown(key))
             {
-                int numberPressed = key - KeyCode.Alpha0;
-                InputNumber?.Invoke(numberPressed);
+                InputNumber?.Invoke(i);
             }
         }
     }
-    private void AnyInput(){
-        if(Input.anyKeyDown || Input.anyKey){
-            InputRegistred?.Invoke();
-        }
-    }
-    public void Update()
-    {
-        AnyInput();
+    void Update(){
+        MoveInput();
 
-        NumberInput();
-        LeftMouseButon();
-        ControllWASD();
-        Restart();
+        StartCrouch();
+        IsCrouching();
+        IsJumping();
+        IsRestart();
+
+        IsShoot();
+        IsInputNumber();
     }
+
 }

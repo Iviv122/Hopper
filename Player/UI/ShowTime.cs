@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShowTime : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI textfield;
+    [SerializeField] private Rigidbody player;
     private float time;
     private bool isCounting = false;
     int minutes;
@@ -13,7 +14,6 @@ public class ShowTime : MonoBehaviour
 
     void Start()
     {
-        FindAnyObjectByType<InputManager>().InputRegistred += StartCounting;
         textfield.text = string.Format("{0:D2}:{1:D2}:{2:D3}", minutes, seconds, milliseconds);
     }
 

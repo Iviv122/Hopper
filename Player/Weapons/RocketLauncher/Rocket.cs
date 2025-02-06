@@ -8,19 +8,19 @@ public class Rocket : MonoBehaviour
        rb.useGravity = false; 
     }
     private void Start() {
-        rb.AddForce(transform.forward*100f,ForceMode.Impulse);
+        rb.AddForce(transform.forward*1f,ForceMode.Impulse);
     }
     void OnCollisionEnter(Collision other) {
 
 
         if(!other.gameObject.CompareTag(gameObject.tag)){
-            Collider[] overlappedColliders = Physics.OverlapSphere(transform.position,7.5f);
+            Collider[] overlappedColliders = Physics.OverlapSphere(transform.position,1.5f);
 
             foreach (Collider item in overlappedColliders)
             {
                 Rigidbody rigidbody = item.attachedRigidbody;
                 if(rigidbody){
-                    rigidbody.AddExplosionForce(250f,transform.position,7.5f);
+                    rigidbody.linearVelocity += (rigidbody.gameObject.transform.position-transform.position).normalized*10;
                 }    
             }
 
