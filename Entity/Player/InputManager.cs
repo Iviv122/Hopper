@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
     public event Action CrouchEnd;
     public event Action Shoot;
     public event Action<int> InputNumber;
+    public event Action anyInput;
     void MoveInput(){
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical"); 
@@ -42,6 +43,11 @@ public class InputManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
+    void AnyInput(){
+        if(Input.anyKey){
+            anyInput?.Invoke();
+        }
+    }
     void IsInputNumber(){
         for (int i = 0; i <= 9; i++)
         {
@@ -62,6 +68,7 @@ public class InputManager : MonoBehaviour
 
         IsShoot();
         IsInputNumber();
+        AnyInput();
     }
 
 }

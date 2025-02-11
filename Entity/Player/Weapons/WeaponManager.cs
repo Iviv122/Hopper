@@ -21,15 +21,22 @@ public class WeaponManager : MonoBehaviour
     }
     public void AddRocketLauncher(){
         RocketLauncher rocketlauncher = gameObject.AddComponent<RocketLauncher>();
+        rocketlauncher.Initialize(cam,player.rb);
         weapons.Add(rocketlauncher);
     }
     public void AddShotgun(){
         Shotgun shotgun = gameObject.AddComponent<Shotgun>();
+        shotgun.Initialize(cam,player.rb);
         weapons.Add(shotgun);
+    }
+    public void MinigunAdd(){
+        Minigun minigun = gameObject.AddComponent<Minigun>();
+        minigun.Initialize(cam,player.rb);
+        weapons.Add(minigun);
     }
     public void Shoot(){
         try{
-            weapons[currentWeapon].Shoot(cam,player.rb);
+            weapons[currentWeapon].Shoot();
         }catch(IndexOutOfRangeException e){
             Debug.Log(e);
         }

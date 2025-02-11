@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject stepArrayDown;
     [SerializeField] private float stepHigh;
     [SerializeField] private float stepSmooth;
+    [SerializeField] RaycastHit slopeHit;
     public event Action groundTouched; 
     private void Awake()
     {
@@ -69,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
     {
         wishvel = (orientation.forward * input.y + orientation.right * input.x).normalized;
         wishdir = new Vector3(wishvel.x,0,wishvel.z)*MoveSpeed;
+        wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal);
 
         float wishspeed = wishdir.magnitude;
         wishdir.Normalize();
@@ -80,7 +82,6 @@ public class PlayerMovement : MonoBehaviour
 
         if(isGrounded){
             Accelerate(wishspeed);
-
             groundTouched?.Invoke();
         }else{
             AirAccelerate(wishspeed);
@@ -114,7 +115,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     private void IsGrounded(){
-        isGrounded = Physics.Raycast(transform.position,-transform.up,height/2+0.3f,ground);
+        isGrounded = Physics.Raycast(transform.position,Vector3.down,height/2+0.1f,ground) || OnSlope();
+    }
+    private bool OnSlope(){
+        if(Physics.Raycast(transform.position,Vector3.down,out slopeHit, height/2+0.5f)){
+            if(slopeHit.normal != Vector3.up){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
     void stepClimb(){
         RaycastHit lowerHit;
@@ -134,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         IsGrounded();
-        Debug.Log($"{input.x} : {input.y}");
+        //Debug.Log($"{input.x} : {input.y}");
+        
     }
 }
