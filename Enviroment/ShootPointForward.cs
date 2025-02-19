@@ -1,28 +1,24 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class ShootPoint : MonoBehaviour
+public class ShootPointForward : MonoBehaviour
 {
-    [Header("Basic")]
+    [Header("Base")]
     [SerializeField] GameObject projectile;
-    [SerializeField] float delayBeforeStart;
-    [SerializeField] float delayBetweenAttacks;
-    [SerializeField] Vector3 ShootDirection;
-    [SerializeField] Vector3 offset;
+    [SerializeField] float AttackDelay;
+    [SerializeField] float AttackCooldown;
     [SerializeField] Transform target;
-    [Header("Object Pool")]
+    [SerializeField] Vector3 offset;
+    [Header("Pool")]
     [SerializeField] int maxAmountOfObjects = 1000;
     [SerializeField] int startPool = 100;
-
     private ObjectPool<Projectile> ProjectilePool;
-    private Quaternion rot;
+
     private void ReturnObjectToPool(Projectile Instance){
         ProjectilePool.Release(Instance);
     }
     private Projectile CreatePooledObject(){
-        Projectile Instance = Instantiate(projectile, transform.position+offset, rot).GetComponent<Projectile>();
+        Projectile Instance = Instantiate(projectile, transform.position+offset, transform.rotation).GetComponent<Projectile>();
         Instance.Disable += (Projectile p) => ReturnObjectToPool(p as Projectile);
         Instance.Spawn(target); 
         Instance.gameObject.SetActive(true);
@@ -43,22 +39,16 @@ public class ShootPoint : MonoBehaviour
         Instance.Spawn(target); 
 
         Instance.transform.position = transform.position+offset;
-        Instance.transform.rotation = rot;
+        Instance.transform.rotation = transform.rotation;
     }
-    void Awake()
-    {
-
-        rot = Quaternion.LookRotation(transform.position+ShootDirection,transform.up);
-        //rot = Quaternion.FromToRotation(transform.position+offset,ShootDirection+transform.position);
+    void Awake(){
         ProjectilePool = new ObjectPool<Projectile>(CreatePooledObject,OnTakeFromPool,OnReturnToPool, OnDestroyObject,false,startPool,maxAmountOfObjects);
-        InvokeRepeating(nameof(Shoot),delayBeforeStart,delayBetweenAttacks);
+        InvokeRepeating(nameof(Shoot),AttackDelay,AttackCooldown);    
     }
     void Shoot(){
         ProjectilePool.Get();
     }
     private void OnDrawGizmosSelected() {
-        rot = Quaternion.LookRotation(transform.position+ShootDirection,transform.up);
-        Vector3 direction = rot * Vector3.forward;
-        Gizmos.DrawLine(transform.position+offset,transform.position+offset+direction);
+        Gizmos.DrawLine(transform.position+offset,transform.position+transform.forward*100);     
     }
 }

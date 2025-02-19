@@ -25,7 +25,10 @@ abstract public class Entity : MonoBehaviour
             HealthChanged?.Invoke();
         }
     }
-    public void GetDamage(int Damage)
+    public void InvokeHealthChanged(){
+        HealthChanged?.Invoke();
+    }
+    public virtual void GetDamage(int Damage)
     {
         Health -= Damage;
         HealthChanged?.Invoke(); 

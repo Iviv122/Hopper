@@ -3,14 +3,16 @@ using UnityEngine.Pool;
 
 public class RocketLauncher : Weapon
 {
-    public override int MaxAmmo => 4;
     private bool canShoot = true;
     private ObjectPool<Projectile> RocketPool;
     void Awake()
     {
-        CurrentAmmo = MaxAmmo;
         canShoot = true;
         Bullet = Resources.Load("Projectiles/Rocket") as GameObject;
+
+        ammoType = AmmoType.Rocket;
+        ammoConsumption = 1;
+        
         RocketPool = new ObjectPool<Projectile>(CreatePooledObject,OnTakeFromPool,OnReturnToPool, OnDestroyObject,false,100,1000);
     }
     private void ReturnObjectToPool(Projectile Instance){
@@ -43,16 +45,16 @@ public class RocketLauncher : Weapon
         Instance.transform.position = rayOrigin;
         Instance.transform.rotation = cam.transform.rotation;
     }
-    public override void Shoot()
+    public override void Shoot(AmmoManager ammo)
     {
-        if (canShoot && CurrentAmmo >0){
+        if (canShoot){
                 Debug.Log("Actually shot");
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
 
             RocketPool.Get();
+            ammo.RemoveAmmo(ammoType,ammoConsumption);
 
             canShoot=false;
-            CurrentAmmo--;
             Invoke(nameof(ResetShot),0.8f);
         }
     }

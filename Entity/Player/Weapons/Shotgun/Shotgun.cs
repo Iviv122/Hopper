@@ -4,14 +4,16 @@ using UnityEngine.Pool;
 public class Shotgun : Weapon
 {
 
-    public override int MaxAmmo => 2;
     private bool canShoot = true;
     private ObjectPool<Pellet> PelletPool;
     void Awake()
     {
-        CurrentAmmo = MaxAmmo;
         canShoot = true;
+
         Bullet = Resources.Load("Projectiles/Pellet") as GameObject;
+        ammoType = AmmoType.BuckShot;
+        ammoConsumption = 1;
+
         PelletPool = new ObjectPool<Pellet>(CreatePooledObject,OnTakeFromPool,OnReturnToPool, OnDestroyObject,false,200,2000);
     }
     private void ReturnObjectToPool(Pellet Instance){
@@ -44,16 +46,16 @@ public class Shotgun : Weapon
         Instance.transform.position = rayOrigin;
         Instance.transform.rotation = cam.transform.rotation;
     }
-    public override void Shoot()
+    public override void Shoot(AmmoManager ammo)
     {
-        if (canShoot && CurrentAmmo >0){
+        if (canShoot){
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
 
             rb.linearVelocity += -cam.transform.forward*25f;
             //Instnce
             PelletPool.Get();
+            ammo.RemoveAmmo(ammoType,ammoConsumption);
 
-            CurrentAmmo--;
             canShoot = false;
             Invoke(nameof(ResetShot),0.25f);
         }

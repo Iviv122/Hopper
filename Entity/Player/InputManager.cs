@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private KeyCode jump = KeyCode.Space;
     [SerializeField] private KeyCode slide = KeyCode.LeftControl;
     [SerializeField] private KeyCode restart = KeyCode.R;
+    [SerializeField] private KeyCode act = KeyCode.E;
     [SerializeField] public float x;
     [SerializeField] public float y; 
     [SerializeField] public bool isCrouching;
@@ -16,6 +18,7 @@ public class InputManager : MonoBehaviour
     public event Action CrouchStart;
     public event Action CrouchEnd;
     public event Action Shoot;
+    public event Action Act;
     public event Action<int> InputNumber;
     public event Action anyInput;
     void MoveInput(){
@@ -58,12 +61,18 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+    void IsActing(){
+        if(Input.GetKeyDown(act)){
+            Act?.Invoke();
+        }
+    }
     void Update(){
         MoveInput();
 
         StartCrouch();
         IsCrouching();
         IsJumping();
+        IsActing();
         IsRestart();
 
         IsShoot();

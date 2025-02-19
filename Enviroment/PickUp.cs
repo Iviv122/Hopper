@@ -1,22 +1,36 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.UIElements;
 
 public class PickUp : MonoBehaviour
 {
     public PickUpType pickUpType;
+    [Header("Weapon")]
     public WeaponType weapon;
+    [Header("Health")]
     public int healthAmmount;
-
+    [Header("Ammo")]
+    public int AmmoAmount;
+    public AmmoType ammoType;
+    [Header("Armour")]
+    public int ArmourAmmount;
     private void Pick(GameObject player){
 
         switch (pickUpType)
         {
             case PickUpType.Weapon:
                 AddItem(player.GetComponentInParent<WeaponManager>());
+                AddAmmo(player.GetComponentInParent<AmmoManager>(),weapon);
             break;
             case PickUpType.Health:
                 player.GetComponentInParent<PlayerInfo>().Health+= healthAmmount;
+            break;
+            case PickUpType.Ammo:
+                AddAmmo(player.GetComponentInParent<AmmoManager>()); 
+            break;
+            case PickUpType.Armour:
+                player.GetComponentInParent<PlayerInfo>().Armour += ArmourAmmount;
             break;
         }
     }
@@ -27,7 +41,6 @@ public class PickUp : MonoBehaviour
             Pick(col.gameObject);
             Destroy(gameObject);
     
-            Debug.Log("Weapon added");
         }
     }
     void AddItem(WeaponManager player)
@@ -46,22 +59,38 @@ public class PickUp : MonoBehaviour
 
         }
     }
+    void AddAmmo(AmmoManager player){
+        switch(ammoType){
+            case AmmoType.Nails:
+                player.Nails += AmmoAmount;
+            return;
+            case AmmoType.Rocket:
+                player.Rockets += AmmoAmount;
+            return;
+            case AmmoType.BuckShot:
+                player.BuckShots += AmmoAmount;
+            return;
+        }
+    }
+    void AddAmmo(AmmoManager player, WeaponType weapon){
+        switch(weapon){
+            case WeaponType.NailGun:
+                player.Nails += 100;
+            return;
+            case WeaponType.RocketLauncher:
+                player.Rockets += 10;
+            return;
+            case WeaponType.ShotGun:
+                player.BuckShots += 15;
+            return;
+        }
+    }
 }
 public enum PickUpType{
     Weapon,
     Ammo,
     Health,
-    // Armour?
+    Armour
 }
-public enum AmmoType{
-    Nails,
-    Rocket,
-    BuckShot,
-    // other
-}
-public enum WeaponType
-{
-    RocketLauncher,
-    ShotGun,
-    NailGun
-}
+
+

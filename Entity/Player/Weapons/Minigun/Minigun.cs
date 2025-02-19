@@ -3,13 +3,16 @@ using UnityEngine.Pool;
 
 public class Minigun : Weapon 
 {
-    public override int MaxAmmo => -1;
     private bool canShoot = true;
     private ObjectPool<Nail> NailPool;
     void Awake()
     {
         canShoot = true;
         Bullet = Resources.Load("Projectiles/Nail") as GameObject;
+
+        ammoType = AmmoType.Nails;
+        ammoConsumption = 1;
+
         NailPool = new ObjectPool<Nail>(CreatePooledObject,OnTakeFromPool,OnReturnToPool, OnDestroyObject,false,200,100_000);
     }
     private void ReturnObjectToPool(Nail Instance){
@@ -40,14 +43,15 @@ public class Minigun : Weapon
         Instance.transform.position = rayOrigin;
         Instance.transform.rotation = cam.transform.rotation;
     }
-    public override void Shoot()
+    public override void Shoot(AmmoManager ammo)
     {
         if(canShoot){
             
             canShoot=false;
 
             NailPool.Get();
-           
+            ammo.RemoveAmmo(ammoType,ammoConsumption);
+
             Invoke(nameof(ResetShot),0.1f);
         }
     }

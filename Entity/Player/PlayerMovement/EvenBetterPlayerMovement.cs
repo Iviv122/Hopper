@@ -10,11 +10,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float MaxGroundSpeed = 25;
     [SerializeField] private float MaxAirSpeed = 25;
     [SerializeField] private float MoveSpeed = 15;
-    [SerializeField] private float SideSpeed = 20;
     [SerializeField] private float stopSpeed = 5; // static?
     [SerializeField] private float friction = 0.8f; // kinetic
     [SerializeField] private float accel = 3;
-    [SerializeField] private float airControll = 0.3f;
     [SerializeField] private bool isGrounded;
     [SerializeField] private LayerMask ground;
     [SerializeField] private float height;
@@ -26,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Steps")]
     [SerializeField] private GameObject stepArrayUp;
     [SerializeField] private GameObject stepArrayDown;
-    [SerializeField] private float stepHigh;
     [SerializeField] private float stepSmooth;
     [SerializeField] RaycastHit slopeHit;
     public event Action groundTouched; 
@@ -69,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         wishvel = (orientation.forward * input.y + orientation.right * input.x).normalized;
-        wishdir = new Vector3(wishvel.x,0,wishvel.z)*MoveSpeed;
-        wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal);
+        wishdir = new Vector3(wishvel.x,0,wishvel.z);
+        wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal)*MoveSpeed;
 
         float wishspeed = wishdir.magnitude;
         wishdir.Normalize();
