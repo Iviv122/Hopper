@@ -2,7 +2,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class Rocket : Projectile
+public class Rocket : Projectile 
 {
     [SerializeField] Rigidbody rb;
     Vector3 Direction;
@@ -27,10 +27,12 @@ public class Rocket : Projectile
         //    Explode();
         //}
     }
+
     void Explode()
     {
         Collider[] overlappedColliders = Physics.OverlapSphere(transform.position, 3.5f);
-
+        DestroyBreakable(transform,3.5f,20); 
+        
         foreach (Collider item in overlappedColliders)
         {
             Rigidbody rigidbody = item.GetComponent<Rigidbody>();

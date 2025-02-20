@@ -10,12 +10,17 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] List<Weapon> weapons;
     [SerializeField] AmmoManager ammo;
     [SerializeField] Weapon currentWeapon;
+    public event Action<Weapon> weaponChanged;
     private void Awake() {
         input.Shoot += Shoot;
-        input.InputNumber += changeWeapon;
-    
-        EmptyHands hands = gameObject.AddComponent<EmptyHands>();
+        input.InputNumber += ChangeWeapon;
+         
 
+        EmptyHands hands = gameObject.AddComponent<EmptyHands>(); // or rather kick XDD
+        hands.Initialize(cam,player.rb);
+        currentWeapon = hands;
+    
+        weaponChanged?.Invoke(currentWeapon);
     }
     public void AddRocketLauncher(){
         if(GetComponent<RocketLauncher>() != null){
@@ -24,6 +29,8 @@ public class WeaponManager : MonoBehaviour
         RocketLauncher rocketlauncher = gameObject.AddComponent<RocketLauncher>();
         rocketlauncher.Initialize(cam,player.rb);
         weapons.Add(rocketlauncher);
+        currentWeapon = rocketlauncher;
+        weaponChanged?.Invoke(currentWeapon);
     }
     public void AddShotgun(){
         if(GetComponent<Shotgun>() != null){
@@ -32,6 +39,8 @@ public class WeaponManager : MonoBehaviour
         Shotgun shotgun = gameObject.AddComponent<Shotgun>();
         shotgun.Initialize(cam,player.rb);
         weapons.Add(shotgun);
+        currentWeapon = shotgun;
+        weaponChanged?.Invoke(currentWeapon);
     }
     public void MinigunAdd(){
         if(GetComponent<Minigun>() != null){
@@ -40,9 +49,15 @@ public class WeaponManager : MonoBehaviour
         Minigun minigun = gameObject.AddComponent<Minigun>();
         minigun.Initialize(cam,player.rb);
         weapons.Add(minigun);
+        currentWeapon = minigun;
+        weaponChanged?.Invoke(currentWeapon);
     }
     public void Shoot(){
-        if(weapons.Count > 0 && ammo.CheckAmmoAmount(currentWeapon.ammoType) >= currentWeapon.ammoConsumption){
+        if(currentWeapon.ammoType == AmmoType.None){
+            currentWeapon.Shoot(ammo);
+            return;
+        }
+        if(ammo.CheckAmmoAmount(currentWeapon.ammoType) >= currentWeapon.ammoConsumption){
             currentWeapon.Shoot(ammo);
         }
     }
@@ -50,25 +65,25 @@ public class WeaponManager : MonoBehaviour
     private Predicate<Weapon> isRocketLauncher = (Weapon p) => { return p is RocketLauncher;};
     private Predicate<Weapon> isMinigun = (Weapon p) => { return p is Minigun;};
     private Predicate<Weapon> isEmptyHands = (Weapon p) => { return p is EmptyHands;};
-    public void changeWeapon(int index){
-        if(weapons.Count-1 < index){
-            return;
-        }
-        if(index<0){
-            index = 0;
-        }
+
+    public bool AnyWeapon(){
+        return weapons.Count > 1;
+    }
+    public void ChangeWeapon(int index){
         currentWeapon = index switch
         {
+            0 => weapons.Find(isEmptyHands),
             1 => weapons.Find(isShotgun),
             2 => weapons.Find(isRocketLauncher),
-            3 => weapons.Find(isShotgun),
+            3 => weapons.Find(isMinigun),
             _ => currentWeapon,
         };
+        weaponChanged?.Invoke(currentWeapon);
     }
-
 }
 public enum WeaponType
 {
+    None, //0
     RocketLauncher, // 2
     ShotGun, // 1
     NailGun // 3

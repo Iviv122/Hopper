@@ -10,7 +10,7 @@ public class Shotgun : Weapon
     {
         canShoot = true;
 
-        Bullet = Resources.Load("Projectiles/Pellet") as GameObject;
+        Bullet = Resources.Load("Projectiles/PlayerPellet") as GameObject;
         ammoType = AmmoType.BuckShot;
         ammoConsumption = 1;
 
@@ -51,7 +51,7 @@ public class Shotgun : Weapon
         if (canShoot){
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
 
-            rb.linearVelocity += -cam.transform.forward*25f;
+            rb.linearVelocity += -cam.transform.forward*15f;
             //Instnce
             PelletPool.Get();
             ammo.RemoveAmmo(ammoType,ammoConsumption);

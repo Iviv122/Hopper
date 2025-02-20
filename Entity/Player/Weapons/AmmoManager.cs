@@ -70,6 +70,7 @@ public class AmmoManager : MonoBehaviour
     }
 }
 public enum AmmoType{
+    None,
     Nails,
     Rocket,
     BuckShot,

@@ -8,7 +8,7 @@ public class Minigun : Weapon
     void Awake()
     {
         canShoot = true;
-        Bullet = Resources.Load("Projectiles/Nail") as GameObject;
+        Bullet = Resources.Load("Projectiles/PlayerNail") as GameObject;
 
         ammoType = AmmoType.Nails;
         ammoConsumption = 1;

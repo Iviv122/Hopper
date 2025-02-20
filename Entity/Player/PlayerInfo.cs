@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class PlayerInfo : Entity 
@@ -30,11 +31,12 @@ public class PlayerInfo : Entity
         
         if(!isInvincible){
             if(armour >0){
-                int damageRem = damage/2-Armour;
                 Armour -= damage/2;
-                if(damageRem > 0){
-                    damage -= damageRem;
-                }
+                int half = (damage/2-Armour > 0) ? damage/2-Armour : 0; 
+                damage = damage/2 + half; 
+            }
+            if(damage < 0){
+                damage = 0;
             }
             Health -= damage;
             StartCoroutine(IFrames());
@@ -44,11 +46,11 @@ public class PlayerInfo : Entity
     public void GetDamageNoIFrames(int damage){
         
             if(armour >0){
-                int damageRem = damage/2-Armour;
                 Armour -= damage/2;
-                if(damageRem > 0){
-                    damage -= damageRem;
-                }
+                damage = damage/2 + ((damage/2-Armour > 0) ? damage/2-Armour : 0); 
+            }
+            if(damage < 0){
+                damage = 0;
             }
             Health -= damage;
     }

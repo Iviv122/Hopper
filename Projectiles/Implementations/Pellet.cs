@@ -3,9 +3,17 @@ using UnityEngine;
 public class Pellet : Projectile 
 {
     [SerializeField] Rigidbody rb;
-    
+    public void Awake(){
+        if(rb == null){
+            rb = GetComponent<Rigidbody>();
+        }
+        rb.useGravity = false;
+        Invoke(nameof(Destroy),3);
+    } 
     public override void Spawn(Transform target){
-
+        if(rb == null){
+            rb = GetComponent<Rigidbody>();
+        }
         rb.useGravity = false;
         Invoke(nameof(Destroy),3);
     }
@@ -15,18 +23,15 @@ public class Pellet : Projectile
     private void Update() {
         rb.linearVelocity = transform.forward*200f;
     }
-    void OnTriggerEnter(Collider other) {
-
-        if(!other.gameObject.CompareTag(gameObject.tag)){
+        
+    private void OnCollisionEnter(Collision other) {
             Entity target = other.gameObject.GetComponent<Entity>();
             if(!target){
-                target = other.gameObject.GetComponentInParent<Entity>();
+            target = other.gameObject.GetComponentInParent<Entity>();
             }
             if(target){
                 target.GetDamage(5);
             }
-            Destroy(gameObject);
-        }
-
+        Destroy(gameObject);
     }
 }
