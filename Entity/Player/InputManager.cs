@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
@@ -57,6 +55,7 @@ public class InputManager : MonoBehaviour
             KeyCode key = KeyCode.Alpha0 + i;
             if (Input.GetKeyDown(key))
             {
+                Debug.Log(i);
                 InputNumber?.Invoke(i);
             }
         }

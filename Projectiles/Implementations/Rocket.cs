@@ -5,6 +5,8 @@ using UnityEngine.Rendering;
 public class Rocket : Projectile 
 {
     [SerializeField] Rigidbody rb;
+    [SerializeField] ParticleSystem explosionSparks;
+    
     Vector3 Direction;
     void Awake(){
         rb = GetComponent<Rigidbody>(); 
@@ -46,14 +48,6 @@ public class Rocket : Projectile
                 {
                     float Length = (rigidbody.gameObject.transform.position - transform.position).magnitude;
                     Direction = (rigidbody.gameObject.transform.position - transform.position).normalized;
-                    if (Length < 3.25)
-                    {
-                        Direction = -Direction;
-                    }
-                    if (rigidbody.name == "Player")
-                    {
-                        Debug.Log("Rocket n Player Distance " + Length);
-                    }
 
                     rigidbody.linearVelocity += Direction * 20;
                     //rigidbody.AddExplosionForce(20f,transform.position,3.5f,1,ForceMode.VelocityChange);
@@ -70,11 +64,19 @@ public class Rocket : Projectile
             }
         }
 
+        GameObject VFX = Instantiate(Resources.Load("Particles/ExplotionSphere"),transform.position,Quaternion.identity) as GameObject;
+        VFX.transform.parent = null;
+
+        explosionSparks.transform.parent=null;
+        explosionSparks.transform.localScale = new Vector3(1,1,1);
+        explosionSparks.Play();
+
+        DetachParticles();
         Destroy(gameObject);
 
 
     }
-    void OnTriggerStay(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
         Explode();
     }

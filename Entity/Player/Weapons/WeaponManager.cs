@@ -16,9 +16,10 @@ public class WeaponManager : MonoBehaviour
         input.InputNumber += ChangeWeapon;
          
 
-        EmptyHands hands = gameObject.AddComponent<EmptyHands>(); // or rather kick XDD
+        EmptyHands hands = gameObject.GetComponent<EmptyHands>(); // or rather kick XDD
         hands.Initialize(cam,player.rb);
         currentWeapon = hands;
+        weapons.Add(hands);
     
         weaponChanged?.Invoke(currentWeapon);
     }
@@ -72,10 +73,10 @@ public class WeaponManager : MonoBehaviour
     public void ChangeWeapon(int index){
         currentWeapon = index switch
         {
-            0 => weapons.Find(isEmptyHands),
-            1 => weapons.Find(isShotgun),
-            2 => weapons.Find(isRocketLauncher),
-            3 => weapons.Find(isMinigun),
+            1 => weapons.Find(isEmptyHands) ?? currentWeapon,
+            2 => weapons.Find(isShotgun) ?? currentWeapon,
+            3 => weapons.Find(isRocketLauncher) ?? currentWeapon,
+            4 => weapons.Find(isMinigun) ?? currentWeapon,
             _ => currentWeapon,
         };
         weaponChanged?.Invoke(currentWeapon);
