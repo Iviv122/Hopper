@@ -30,7 +30,7 @@ public class Pellet : Projectile
             target = other.gameObject.GetComponentInParent<Entity>();
             }
             if(target){
-                target.GetDamage(5);
+                target.GetDamage(1);
             }
         Destroy(gameObject);
     }

@@ -18,10 +18,10 @@ public class WeaponManager : MonoBehaviour
 
         EmptyHands hands = gameObject.GetComponent<EmptyHands>(); // or rather kick XDD
         hands.Initialize(cam,player.rb);
-        currentWeapon = hands;
         weapons.Add(hands);
-    
-        weaponChanged?.Invoke(currentWeapon);
+    }
+    void Start(){
+        ChangeWeapon(1); 
     }
     public void AddRocketLauncher(){
         if(GetComponent<RocketLauncher>() != null){

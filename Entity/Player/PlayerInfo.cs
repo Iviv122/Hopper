@@ -10,6 +10,7 @@ public class PlayerInfo : Entity
     [SerializeField] public bool isInvincible;
     [SerializeField] private int armour;
     public event Action ArmourChanged;
+    public event Action DamageTaken;
     public int Armour{
         get{return armour;}
         set{
@@ -39,6 +40,7 @@ public class PlayerInfo : Entity
                 damage = 0;
             }
             Health -= damage;
+            DamageTaken?.Invoke(); 
             StartCoroutine(IFrames());
             InvokeHealthChanged(); 
         }

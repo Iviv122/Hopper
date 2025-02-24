@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.UIElements;
 
 public class Shotgun : Weapon
 {
@@ -21,8 +22,20 @@ public class Shotgun : Weapon
     }
     private Pellet CreatePooledObject(){
         Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
-        
-        Pellet Instance = Instantiate(Bullet, rayOrigin, cam.transform.rotation).GetComponent<Pellet>();
+
+        float AngleX = Random.Range(-5f,5.1f);
+        float AngleY = Random.Range(-5f,5.1f);
+
+        Pellet Instance = Instantiate(
+            Bullet,
+            rayOrigin,
+            Quaternion.Euler(
+                cam.transform.rotation.eulerAngles.x+AngleX,
+                cam.transform.rotation.eulerAngles.y+AngleY,
+                cam.transform.rotation.eulerAngles.z)
+            ).GetComponent<Pellet>();
+       
+       
         Instance.Disable += (Projectile p) => ReturnObjectToPool(p as Pellet);
         Instance.Spawn(transform);
         Instance.gameObject.SetActive(true);
@@ -44,20 +57,26 @@ public class Shotgun : Weapon
         Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
 
         Instance.transform.position = rayOrigin;
-        Instance.transform.rotation = cam.transform.rotation;
+        float AngleX = Random.Range(-5f,5f);
+        float AngleY = Random.Range(-5f,5f);
+        Instance.transform.rotation = Quaternion.Euler(cam.transform.rotation.eulerAngles.x+AngleX,cam.transform.rotation.eulerAngles.y+AngleY,cam.transform.rotation.eulerAngles.z); 
+        // Quaternion.Euler(cam.transform.rotation.x+AngleX,cam.transform.rotation.y+AngleY,cam.transform.rotation.z);
     }
     public override void Shoot(AmmoManager ammo)
     {
         if (canShoot){
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
 
-            rb.linearVelocity += -cam.transform.forward*15f;
+            rb.linearVelocity += -cam.transform.forward*7.5f;
             //Instnce
-            PelletPool.Get();
+            for(int i=0;i<20;i++){
+                PelletPool.Get();
+            }
+            
             ammo.RemoveAmmo(ammoType,ammoConsumption);
 
             canShoot = false;
-            Invoke(nameof(ResetShot),0.25f);
+            Invoke(nameof(ResetShot),0.4f);
         }
     }
     public void ResetShot(){

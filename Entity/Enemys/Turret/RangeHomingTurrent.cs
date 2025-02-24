@@ -18,12 +18,10 @@ public class RangeHomingTurrent : Entity
     [SerializeField] int startPool = 100;
     [SerializeField] int maxProjectiles = 200;
     ObjectPool<Projectile> ProjectilePool;
-    Vector3 BulletOffset;
     bool readyToShoot;
     RaycastHit Hit;
     void Awake()
     {
-        BulletOffset = transform.forward*2;
         readyToShoot = true;
 
         ProjectilePool = new ObjectPool<Projectile>(CreatePooledObject,OnTakeFromPool,OnReturnToPool, OnDestroyObject,false,startPool,maxProjectiles);    
@@ -35,7 +33,7 @@ public class RangeHomingTurrent : Entity
 
         Vector3 dir = (CurrentTarget.position-transform.position).normalized;
 
-        Projectile Instance = Instantiate(Ammo, transform.position + dir*2f,Quaternion.LookRotation(dir,CurrentTarget.forward)).GetComponent<Projectile>();
+        Projectile Instance = Instantiate(Ammo, transform.position + dir*4f,Quaternion.LookRotation(dir,CurrentTarget.forward)).GetComponent<Projectile>();
         
         Instance.Disable += (Projectile p) => ReturnObjectToPool(p as Projectile);
         Instance.Spawn(transform);
@@ -58,7 +56,7 @@ public class RangeHomingTurrent : Entity
         Vector3 dir = (CurrentTarget.position-transform.position).normalized;
         Instance.Spawn(CurrentTarget);
 
-        Instance.transform.position = transform.position + dir*2f;
+        Instance.transform.position = transform.position + dir*4f;
         Instance.transform.rotation = Quaternion.LookRotation(dir,CurrentTarget.forward);
     }
     void Update()
