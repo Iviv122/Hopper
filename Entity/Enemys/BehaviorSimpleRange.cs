@@ -1,11 +1,13 @@
+using Unity.XR.Oculus.Input;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations;
 using UnityEngine.Pool;
 using UnityEngine.UIElements;
 /// <summary>
 /// As well as turret, only one active target so sad :p 
 /// </summary>
-public class BehaviorSimpleRange : MonoBehaviour
+public class BehaviorSimpleRange : Entity 
 {
     [Header("Base")]
     [SerializeField] public NavMeshAgent agent;
@@ -132,5 +134,9 @@ public class BehaviorSimpleRange : MonoBehaviour
         if (!playerInSightRange && !playerInAttackRange){Patrolling();}
         if (playerInSightRange && !playerInAttackRange){ChasePlayer();}
         if (playerInSightRange && playerInAttackRange){AttackPlayer();}
+    }
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 }

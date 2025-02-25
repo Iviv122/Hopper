@@ -21,7 +21,7 @@ public class Shotgun : Weapon
         PelletPool.Release(Instance);
     }
     private Pellet CreatePooledObject(){
-        Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 1f));
+        Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
 
         float AngleX = Random.Range(-5f,5.1f);
         float AngleY = Random.Range(-5f,5.1f);

@@ -1,15 +1,6 @@
-# Hopper - platformer
+# Hopper - platformer/FPS Shooter
 
-  Control
+  https://iviv122.itch.io/hopper
 
-  - Look around - mouse
-  
-  - Shoot - left mouse button
-  
-  - Move around - WASD
-  
-  - Jump - space
-  
-  - Crouch/slide - Ctrl
-  
-  - Choose weapon - numbers from 1 to 9
+
+## Code which provided here, probably inefficent and can be improved. But It feels ok how it is :p
