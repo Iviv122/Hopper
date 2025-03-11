@@ -8,10 +8,10 @@ public class HomingRocket : HomingProjectile
     {
         Destroy(gameObject);
     }
-    
+    const float radius = 5;
     void Explode()
     {
-        Collider[] overlappedColliders = Physics.OverlapSphere(transform.position, 3.5f);
+        Collider[] overlappedColliders = Physics.OverlapSphere(transform.position, radius);
 
         foreach (Collider item in overlappedColliders)
         {

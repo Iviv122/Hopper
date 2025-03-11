@@ -29,11 +29,11 @@ public class Rocket : Projectile
         //    Explode();
         //}
     }
-
+    const float radius = 5f;    
     void Explode()
     {
-        Collider[] overlappedColliders = Physics.OverlapSphere(transform.position, 3.5f);
-        DestroyBreakable(transform,3.5f,20); 
+        Collider[] overlappedColliders = Physics.OverlapSphere(transform.position, radius);
+        DestroyBreakable(transform,radius,20); 
         
         foreach (Collider item in overlappedColliders)
         {
