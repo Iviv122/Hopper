@@ -57,12 +57,9 @@ public class EnemySpawner : MonoBehaviour
             NavMeshHit Hit;
             if(NavMesh.SamplePosition(SpawnPos,out Hit,200f,-1)){
                 //literally teleport
-                enemy.Agent.Warp(Hit.position);
+                enemy.movement.Agent.Warp(Hit.position);
                 //turn on 
-                enemy.Movement.Target = Player;
-                enemy.Agent.enabled = true;
-                enemy.Movement.StartChasing();
-
+                enemy.Setup(Player);
             }else{
                 Debug.Log($"Warping enemy to {Hit.position}");
                 Debug.LogError($"Can`t place NavMeshAgent on NavMesh");
@@ -71,7 +68,6 @@ public class EnemySpawner : MonoBehaviour
             Debug.LogError($"Unable to fetch enemy");
         }
     }
-
     private void ReturnObjectToPool(Enemy enemy)
     {
         EnemyPool.Release(enemy);

@@ -5,10 +5,6 @@ using UnityEngine.AI;
 public class EnemyScriptableObject :ScriptableObject 
 {
     public int Health = 20;
-    public float AttackDelay = 1f;
-    public int Damage = 5;
-    public float attackRadius = 1.5f;
-    public bool isRange = false;
 
     public float AIUpdateInterval = 0.1f;
     public float Acceleration =8;
