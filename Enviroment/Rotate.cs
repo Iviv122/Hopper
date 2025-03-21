@@ -7,9 +7,9 @@ public class Rotate : MonoBehaviour
     [SerializeField] float y;
     [SerializeField] float z;
 
-    private void Update() {
+    private void FixedUpdate() {
 
-    transform.Rotate(x,y,z);
+        transform.Rotate(x,y,z);
 
     }
 }

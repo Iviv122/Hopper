@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float Speed;
     [SerializeField] private float MaxGroundSpeed = 25;
     [SerializeField] private float MaxAirSpeed = 25;
+    [SerializeField] private float RunSpeed;
     [SerializeField] private float MoveSpeed = 15;
     [SerializeField] private float stopSpeed = 5; // static?
     [SerializeField] private float friction = 0.8f; // kinetic
@@ -26,12 +27,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject stepArrayDown;
     [SerializeField] private float stepSmooth;
     [SerializeField] RaycastHit slopeHit;
-    public event Action groundTouched; 
+    public event Action groundTouched;
+
+    private float GroundRunSpeed;
+    private float AirRunSpeed;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
+        input.Jump += Jump;
+
+        GroundRunSpeed = MaxGroundSpeed + RunSpeed;
+        AirRunSpeed = MaxAirSpeed + RunSpeed;
     }
     private void Accelerate(float wishspeed)
     {
@@ -65,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Move()
     {
+        
         wishvel = (orientation.forward * input.y + orientation.right * input.x).normalized;
         wishdir = new Vector3(wishvel.x,0,wishvel.z);
         wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal)*MoveSpeed;
@@ -85,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
-    private void OnJump(){
+    private void Jump(){
         if(isGrounded){
             rb.linearVelocity += new Vector3(rb.linearVelocity.x,jumpForce,rb.linearVelocity.z);
         }
@@ -112,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     private void IsGrounded(){
-        isGrounded = Physics.Raycast(transform.position,Vector3.down,height/2+0.1f,ground) || OnSlope();
+        isGrounded = Physics.Raycast(transform.position,Vector3.down,height/2+0.2f,ground);
     }
     private bool OnSlope(){
         if(Physics.Raycast(transform.position,Vector3.down,out slopeHit, height/2+0.5f)){
@@ -140,8 +149,12 @@ public class PlayerMovement : MonoBehaviour
         stepClimb();
     }
     private void Update()
-    {
+    {   
+        MaxGroundSpeed = input.isRunning ? GroundRunSpeed : GroundRunSpeed-RunSpeed;
+        MaxAirSpeed = input.isRunning ? AirRunSpeed : AirRunSpeed-RunSpeed;
+        
         IsGrounded();
+        
         //Debug.Log($"{input.x} : {input.y}");
         
     }

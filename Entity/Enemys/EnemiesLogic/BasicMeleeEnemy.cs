@@ -5,10 +5,13 @@ using System.Collections;
 public class BasicMeleeEnemy : Enemy 
 {
     public float AttackRadius = 2f;
-    public float AttackDelay = 0.5f;
+    public float PreAttackDelay = 0.6f;
+    public float PostAttackDelay = 0.2f;
+    public Animator animator;
 
-    private WaitForSeconds Wait;
-    private Coroutine attackCoroutine; 
+    private WaitForSeconds PreWait;
+    private WaitForSeconds PostWait;
+    private Coroutine attackCoroutine;
     public override void OnEnable()
     {
         base.OnEnable();
@@ -16,7 +19,8 @@ public class BasicMeleeEnemy : Enemy
         
     }
     public void Start(){
-        Wait = new WaitForSeconds(AttackDelay);
+        PreWait = new WaitForSeconds(PreAttackDelay);
+        PostWait = new WaitForSeconds(PostAttackDelay);
 
         StartCoroutine(Logic());
         attackCoroutine = null;
@@ -39,14 +43,13 @@ public class BasicMeleeEnemy : Enemy
         }
     }
     public IEnumerator AttackRoutine(){
-        
+        animator.SetTrigger("Attack");
         Debug.Log("Delay before attack"); 
-        yield return Wait;
-
+        yield return PreWait;
         Attack();
         Debug.Log("attack"); 
        
-        yield return Wait;
+        yield return PostWait;
         Debug.Log("Delay after attack");
         attackCoroutine = null;
     }

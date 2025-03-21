@@ -54,10 +54,6 @@ public class Rocket : Projectile
                 }
             }
             Entity entity = item.GetComponent<Entity>();
-            if (!entity)
-            {
-                entity = item.GetComponentInParent<Entity>();
-            }
             if (entity)
             {
                 entity.GetDamage(20);

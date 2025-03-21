@@ -54,13 +54,15 @@ public class WeaponManager : MonoBehaviour
         weaponChanged?.Invoke(currentWeapon);
     }
     public void Shoot(){
+        /*
         if(currentWeapon.ammoType == AmmoType.None){
             currentWeapon.Shoot(ammo);
             return;
         }
-        if(ammo.CheckAmmoAmount(currentWeapon.ammoType) >= currentWeapon.ammoConsumption){
+        */
+        //if(ammo.CheckAmmoAmount(currentWeapon.ammoType) >= currentWeapon.ammoConsumption){
             currentWeapon.Shoot(ammo);
-        }
+        //}
     }
     private Predicate<Weapon> isShotgun = (Weapon p) => { return p is Shotgun;};
     private Predicate<Weapon> isRocketLauncher = (Weapon p) => { return p is RocketLauncher;};

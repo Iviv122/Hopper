@@ -40,10 +40,11 @@ public class PlayerInfo : Entity
                 damage = 0;
             }
             Health -= damage;
-            DamageTaken?.Invoke(); 
             StartCoroutine(IFrames());
+            DamageTaken?.Invoke(); 
             InvokeHealthChanged(); 
         }
+
     }
     public void GetDamageNoIFrames(int damage){
         
