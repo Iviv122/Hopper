@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float GroundRunSpeed;
     private float AirRunSpeed;
+    private float AccelRun;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
         GroundRunSpeed = MaxGroundSpeed + RunSpeed;
         AirRunSpeed = MaxAirSpeed + RunSpeed;
+        AccelRun = accel + 1;
     }
     private void Accelerate(float wishspeed)
     {
@@ -152,7 +154,8 @@ public class PlayerMovement : MonoBehaviour
     {   
         MaxGroundSpeed = input.isRunning ? GroundRunSpeed : GroundRunSpeed-RunSpeed;
         MaxAirSpeed = input.isRunning ? AirRunSpeed : AirRunSpeed-RunSpeed;
-        
+        accel = input.isRunning ? AccelRun : AccelRun-1;
+
         IsGrounded();
         
         //Debug.Log($"{input.x} : {input.y}");

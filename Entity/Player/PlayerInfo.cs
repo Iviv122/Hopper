@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerInfo : Entity 
 {
@@ -9,6 +9,9 @@ public class PlayerInfo : Entity
     [SerializeField] public int DamageInInterval;
     [SerializeField] public bool isInvincible;
     [SerializeField] private int armour;
+
+    [SerializeField] GameObject Player;
+    [SerializeField] GameObject Camera;
     public event Action ArmourChanged;
     public event Action DamageTaken;
     public int Armour{
@@ -71,6 +74,22 @@ public class PlayerInfo : Entity
     }
     public override void Die()
     {
+        Camera.transform.parent = null;
+        Camera.AddComponent<Rigidbody>();
+        Camera.AddComponent<Restarter>().RestartDelay();
         Debug.Log("Now i am dead, but i will return >:3");
+        Destroy(Player);
+
+    }
+}     
+public class Restarter : MonoBehaviour
+{
+    public void RestartDelay(){
+        StartCoroutine(_RestartDelay());
+    }
+    private IEnumerator _RestartDelay()
+    {
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
