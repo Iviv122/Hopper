@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float friction = 0.8f; // kinetic
     [SerializeField] private float accel = 3;
     [SerializeField] private bool isGrounded;
+    [SerializeField] private bool canJump;
     [SerializeField] private LayerMask ground;
     [SerializeField] private float height;
     [SerializeField] private Vector3 wishvel;
@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
-        input.Jump += Jump;
+        input.Jump += JumpInput;
 
         GroundRunSpeed = MaxGroundSpeed + RunSpeed;
         AirRunSpeed = MaxAirSpeed + RunSpeed;
@@ -80,6 +80,8 @@ public class PlayerMovement : MonoBehaviour
         wishdir = new Vector3(wishvel.x,0,wishvel.z);
         wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal)*MoveSpeed;
 
+        wishdir = Vector3.ProjectOnPlane(wishdir,slopeHit.normal);
+
         float wishspeed = wishdir.magnitude;
         wishdir.Normalize();
         
@@ -96,11 +98,8 @@ public class PlayerMovement : MonoBehaviour
         }
         
     }
-    private void Jump(){
-        if(isGrounded){
-            rb.linearVelocity += new Vector3(rb.linearVelocity.x,jumpForce,rb.linearVelocity.z);
-        }
-    }
+    
+    
     private void Friction()
     {
         if(isGrounded){
@@ -123,7 +122,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     private void IsGrounded(){
-        isGrounded = Physics.Raycast(transform.position,Vector3.down,height/2+0.2f,ground);
+        canJump = isGrounded = Physics.Raycast(transform.position,Vector3.down,height/2+0.2f,ground);
+    }
+
+    private void OnWall(){
+        if(Physics.Raycast(transform.position,wishdir,1f,ground) && !isGrounded){
+        
+            rb.useGravity = false;
+            Vector3 vel = rb.linearVelocity;
+            vel.y+=Physics.gravity.y/2000;
+            rb.linearVelocity = vel;
+            MaxAirSpeed = MaxAirSpeed+2;
+
+        }else{
+            rb.useGravity = true;
+        }
     }
     private bool OnSlope(){
         if(Physics.Raycast(transform.position,Vector3.down,out slopeHit, height/2+0.5f)){
@@ -144,21 +157,44 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+    private void JumpInput(){
+        jumpBufferCounter = jumpBufferTime;
+    }
+    private void IsJump(){
+        jumpBufferCounter -= Time.deltaTime; // Decrease buffer over time
+        if(canJump && jumpBufferCounter >= 0f){
+
+            jumpBufferCounter = jumpBufferTime; // Store buffer time
+            rb.linearVelocity += new Vector3(0,jumpForce,0);
+        
+            jumpBufferCounter = 0f; // Reset buffer after jump
+        }
+    }
     private void FixedUpdate()
     {
         Move();
         Friction();
         stepClimb();
     }
+    [SerializeField] private float jumpBufferTime = 0.2f; // Buffer window duration
+    private float jumpBufferCounter = 0f;
     private void Update()
     {   
         MaxGroundSpeed = input.isRunning ? GroundRunSpeed : GroundRunSpeed-RunSpeed;
         MaxAirSpeed = input.isRunning ? AirRunSpeed : AirRunSpeed-RunSpeed;
         accel = input.isRunning ? AccelRun : AccelRun-1;
 
-        IsGrounded();
+        OnSlope();
+        IsGrounded();        
+        OnWall();
+        IsJump();
         
+
+
         //Debug.Log($"{input.x} : {input.y}");
-        
+        Speed = rb.linearVelocity.magnitude;
+    }
+    public void OnDrawGizmos() {
+        Gizmos.DrawWireSphere(transform.position,1);
     }
 }

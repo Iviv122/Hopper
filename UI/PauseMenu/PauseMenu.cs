@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,6 +6,7 @@ public class PauseMenu : MonoBehaviour
 {
     [SerializeField] public InputManager input;
     [SerializeField] GameObject pausemenu;
+    [Scene] public string MainMenu;
     private bool isOn =false;
     private void Awake() {
 
@@ -25,15 +27,20 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
         }
     }
-    void Continue(){
-        isOn = true;
+    public void Continue(){
+        isOn = false;
         pausemenu.SetActive(isOn);
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1;
     }
-    void Restart(){
-        SceneManager.LoadScene(nameof(SceneManager.GetActiveScene));
+    public void Restart(){
+        Time.timeScale = 1;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void GoToMainMenu(){
+        Time.timeScale = 1;
+        SceneManager.LoadScene(MainMenu);
     }
 }
