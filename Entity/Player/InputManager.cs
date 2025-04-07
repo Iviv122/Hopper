@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
     public event Action Act;
     public event Action Jump;
     public event Action Pause;
+    public event Action Restart;
     public event Action<int> InputNumber;
     public event Action anyInput;
     void MoveInput(){
@@ -40,7 +41,7 @@ public class InputManager : MonoBehaviour
         }
     }
     void OnRestart(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Restart?.Invoke();
     }
     void OnPause(){
         Pause?.Invoke();

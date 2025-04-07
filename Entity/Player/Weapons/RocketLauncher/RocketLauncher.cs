@@ -5,10 +5,16 @@ public class RocketLauncher : Weapon
 {
     private bool canShoot = true;
     private ObjectPool<Projectile> RocketPool;
+    private AudioClip shootSound;
+    private AudioSource soundSource;
     void Awake()
     {
+        soundSource = gameObject.GetComponent<AudioSource>();
+
         canShoot = true;
+
         Bullet = Resources.Load("Projectiles/Rocket") as GameObject;
+        shootSound = Resources.Load("Sounds/wpn_fire_rpg2") as AudioClip;
 
         ammoType = AmmoType.Rocket;
         ammoConsumption = 1;
@@ -51,6 +57,7 @@ public class RocketLauncher : Weapon
                 Debug.Log("Actually shot");
             Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
 
+            soundSource.PlayOneShot(shootSound);
             RocketPool.Get();
             ammo.RemoveAmmo(ammoType,ammoConsumption);
 

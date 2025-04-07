@@ -91,5 +91,6 @@ public class Restarter : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    
     }
 }
